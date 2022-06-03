@@ -2,7 +2,7 @@ const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')
 
 canvas.width = innerWidth
-canvas.width = innerHeight
+canvas.height = innerHeight
 
 class Boundary {
     static width = 40
