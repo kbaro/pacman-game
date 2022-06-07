@@ -48,7 +48,7 @@ class Player {
           this.radians, 
           Math.PI * 2 - this.radians
           )
-        c.loneTo(this.position.x, this.position.y)
+        c.lineTo(this.position.x, this.position.y)
         c.fillStyle = 'yellow'
         c.fill()
         c.closePath()
