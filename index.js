@@ -56,12 +56,13 @@ class Ghost {
       this.color = color
       this.prevCollisions = []
       this.speed = 2
+      this.scared = false
   }
 
   draw() {
       c.beginPath()
       c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2)
-      c.fillStyle = this.color
+      c.fillStyle = this.scared ? 'blue' : this.color
       c.fill()
       c.closePath()
   }
@@ -88,8 +89,24 @@ class Pellet {
     }
 }
 
+class PowerUp {
+  constructor({ position }) {
+      this.position = position
+      this.radius = 8
+  }
+
+  draw() {
+      c.beginPath()
+      c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2)
+      c.fillStyle = 'white'
+      c.fill()
+      c.closePath()
+  }
+}
+
 const pellets = []
 const boundaries = []
+const powerUps = []
 const ghosts = [
     new Ghost ({
       position: {
@@ -355,6 +372,17 @@ const map = [
             })
           )
           break
+
+          case 'p':
+            powerUps.push(
+              new PowerUp({
+                position: {
+                  x: j * Boundary.width + Boundary.width / 2,
+                  y: i * Boundary.height + Boundary.height / 2
+                }
+              })
+            )
+            break
       }
     })
   })
@@ -468,8 +496,32 @@ function animate() {
         }
     }    
 
+    // power Ups
+    for (let i = powerUps.length - 1; 0 <= i; i--) {
+      const powerUp = powerUps[i]
+      powerUp.draw()
+
+      // player collides with power Up
+      if (Math.hypot(powerUp.position.x - player.position.x,
+        powerUp.position.y - player.position.y
+        ) < 
+        powerUp.radius + player.radius
+        ){
+          powerUps.splice(i, 1)
+
+          // make shosts scared
+          ghosts.forEach(ghost => {
+            ghost.scared = true
+
+            setTimeout(() => {
+              ghost.scared = false
+            }, 3000)
+          })
+        }
+    }
+
     // touch pellets here
-    for (let i = pellets.length - 1; 0 < i; i--) {
+    for (let i = pellets.length - 1; 0 <= i; i--) {
         const pellet = pellets[i]
         pellet.draw()
 
